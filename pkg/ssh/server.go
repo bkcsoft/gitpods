@@ -13,6 +13,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/sourcepods/sourcepods/pkg/storage"
+	gossh "golang.org/x/crypto/ssh"
 )
 
 // NewServer returns a *grpc.Server serving SSH
@@ -26,8 +27,24 @@ func NewServer(addr, hostKeyPath string, logger log.Logger, cli *storage.Client)
 				logger,
 			),
 		),
-		PublicKeyHandler: func(ssh.Context, ssh.PublicKey) bool {
+		PublicKeyHandler: func(ctx ssh.Context, pk ssh.PublicKey) bool {
 			// TODO: This needs to be implemented :D
+			fp := gossh.FingerprintSHA256(pk)
+			level.Debug(logger).Log(
+				"fp", fp,
+			)
+			// pk2, err := api.PubKey.FindByFingerprint(fp)
+			//if err != nil {
+			// log stuff
+			// return false
+			//}
+			//pk3, err := ssh.ParsePublicKey(pk2.Content)
+			//if err != nil {
+			// log stuff
+			// return false
+			//}
+			// return ssh.KeysEqual(pk, pk2)
+
 			return true
 		},
 	}
